@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - Orvex AI</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ── Backend status badge ── */
+  .backend-badge {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.75rem; color: #94a3b8; margin-left: auto;
+  }
+  #backendDot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: #64748b; display: inline-block;
+    box-shadow: 0 0 6px currentColor;
+    transition: background 0.4s;
+  }
+
+  /* ── Extra panels grid ── */
+  .extra-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    max-width: 1300px;
+    margin: 1.5rem auto 0;
+    padding: 0 1.5rem;
+  }
+  .panel {
+    background: rgba(15,23,42,0.85);
+    border: 1px solid rgba(99,102,241,0.25);
+    border-radius: 14px;
+    padding: 1.1rem 1.3rem;
+    backdrop-filter: blur(8px);
+  }
+  .panel h4 {
+    margin: 0 0 0.7rem;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #818cf8;
+  }
+
+  /* ── Stats grid ── */
+  .stat-row { display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.05); font-size:0.82rem; color:#cbd5e1; }
+  .stat-row:last-child { border:none; }
+  .stat-val { color:#e2e8f0; font-weight:600; }
+
+  /* ── Camera list ── */
+  .cam-item  { display:grid; grid-template-columns:80px 1fr 80px 120px; gap:6px; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.05); font-size:0.78rem; color:#94a3b8; }
+  .cam-item:last-child { border:none; }
+
+  /* ── Zone list ── */
+  .zone-item { display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.05); font-size:0.82rem; color:#94a3b8; }
+  .zone-item:last-child { border:none; }
+
+  /* Extra detection info row */
+  .det-row { display:flex; gap:0.8rem; flex-wrap:wrap; margin-top:0.5rem; }
+  .det-pill { background:rgba(99,102,241,0.12); border:1px solid rgba(99,102,241,0.3); border-radius:20px; padding:3px 12px; font-size:0.75rem; color:#a5b4fc; }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+    <div style="display:flex;align-items:center;">
+        <h1><a href="index.html" style="color: inherit; text-decoration: none;">🚨 Orvex AI</a></h1>
+        <span class="beta-badge" style="margin-left: 10px;">BETA</span>
+    </div>
+    <div>
+        <a href="index.html">Home</a>
+        <a href="features.html">Features</a>
+        <a href="system.html">System</a>
+        <a href="dashboard.html" class="active">Dashboard</a>
+    </div>
+    <!-- Backend status -->
+    <div class="backend-badge">
+        <span id="backendDot"></span>
+        <span id="backendStatus">Backend: checking…</span>
+    </div>
+</nav>
+
+<!-- DASHBOARD -->
+<section class="dashboard-container">
+    <h2>Real-Time Surveillance Dashboard</h2>
+    <div class="controls" style="flex-wrap: wrap;">
+        <button class="btn" onclick="startSystem()">▶ Start System</button>
+        <button class="btn stop" onclick="stopSystem()">■ Stop System</button>
+        <button class="btn cam" onclick="startWebcam()">🎥 Live Camera</button>
+        <label class="btn upload" style="cursor:pointer; display:inline-block; margin:0;">
+            📁 Upload Video
+            <input type="file" id="videoUpload" accept="video/*" style="display:none;" onchange="handleVideoUpload(event)">
+        </label>
+    </div>
+
+    <div class="dashboard-grid">
+        <!-- VIDEO FEED -->
+        <div class="video-section" id="video-wrapper" style="position: relative;">
+            <video id="cameraFeed" autoplay playsinline muted controls style="width: 100%; height: 100%; object-fit: contain;">
+                <source src="demo.mp4" type="video/mp4">
+            </video>
+            <canvas id="detectionCanvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none; z-index: 10;"></canvas>
+            <div class="video-overlay"></div>
+        </div>
+
+        <!-- STATS PANEL -->
+        <div class="stats-panel">
+            <div class="stat-box" id="statusBox">
+                <h4>System Status</h4>
+                <p id="alertText" style="color: #64748b;">SYSTEM OFF</p>
+            </div>
+            <div class="stat-box">
+                <h4>Behavior</h4>
+                <p id="behavior">-</p>
+            </div>
+            <div class="stat-box">
+                <h4>Risk Score</h4>
+                <p id="risk">-</p>
+            </div>
+            <div class="stat-box">
+                <h4>Zone</h4>
+                <p id="zone">-</p>
+            </div>
+            <div class="stat-box">
+                <h4>Track ID</h4>
+                <p id="trackId">-</p>
+            </div>
+
+            <!-- Extra detection pills -->
+            <div class="det-row">
+                <span class="det-pill">Object: <strong id="detectedObject">—</strong></span>
+                <span class="det-pill">Last: <strong id="lastSeen">—</strong></span>
+            </div>
+
+            <div class="log-section">
+                <h4>Alert Logs</h4>
+                <div id="logBox" class="log-box"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- EXTRA PANELS -->
+<div class="extra-grid">
+
+    <!-- Live Stats -->
+    <div class="panel">
+        <h4>📊 Live Detection Stats</h4>
+        <div class="stat-row"><span>Total Scans</span>     <span class="stat-val" id="statTotal">—</span></div>
+        <div class="stat-row"><span>🔴 High Risk</span>    <span class="stat-val" id="statHigh">—</span></div>
+        <div class="stat-row"><span>🟡 Medium Risk</span>  <span class="stat-val" id="statMedium">—</span></div>
+        <div class="stat-row"><span>🟢 Low Risk</span>     <span class="stat-val" id="statLow">—</span></div>
+        <div class="stat-row"><span>Objects Detected</span><span class="stat-val" id="statObjects">—</span></div>
+        <div class="stat-row"><span>Alert Queue</span>     <span class="stat-val" id="statAlertQueue">—</span></div>
+    </div>
+
+    <!-- Camera Status -->
+    <div class="panel">
+        <h4>📷 Camera Feeds</h4>
+        <div id="cameraList">
+            <p style="color:#64748b;font-size:0.8rem;">Start system to load…</p>
+        </div>
+    </div>
+
+    <!-- Zone Risk -->
+    <div class="panel">
+        <h4>🗺️ Zone Risk Map</h4>
+        <div id="zoneList">
+            <p style="color:#64748b;font-size:0.8rem;">Start system to load…</p>
+        </div>
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <p>© 2026 Orvex AI | Intelligent Surveillance System (Beta Version)</p>
+</footer>
+
+<!-- TensorFlow.js & COCO-SSD -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+<script src="script.js"></script>
+</body>
+</html>

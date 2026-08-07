@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orvex AI — Real-Time Intelligent Surveillance</title>
+<meta name="description" content="Orvex AI is a real-time behavioral risk intelligence platform that detects threats, tracks objects, and triggers instant alerts — without facial recognition.">
+<style>
+/* ═══════════════════════════════════════════
+   HOME PAGE EXTRAS
+═══════════════════════════════════════════ */
+
+/* Animated background grid */
+.bg-grid {
+    position: fixed; inset: 0;
+    background-image:
+        linear-gradient(rgba(56,189,248,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56,189,248,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none; z-index: 0;
+    animation: gridScroll 30s linear infinite;
+}
+@keyframes gridScroll { to { transform: translateY(60px); } }
+
+.orb { position: fixed; border-radius: 50%; filter: blur(100px); pointer-events: none; z-index: 0; }
+.orb-1 { width:500px;height:500px;background:radial-gradient(circle,rgba(37,99,235,.18),transparent 70%);top:-150px;left:-150px; }
+.orb-2 { width:400px;height:400px;background:radial-gradient(circle,rgba(129,140,248,.14),transparent 70%);bottom:-100px;right:-100px; }
+
+/* ── HERO ── */
+.hero {
+    padding: 130px 20px 80px;
+    position: relative; z-index: 1;
+}
+
+.hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(56,189,248,.08); border: 1px solid rgba(56,189,248,.25);
+    border-radius: 50px; padding: 6px 18px;
+    font-size: 13px; color: #38bdf8; font-weight: 600;
+    letter-spacing: .5px; margin-bottom: 28px;
+    animation: fadeInUp .6s ease both;
+}
+.hero-badge::before { content:''; width:8px;height:8px;background:#38bdf8;border-radius:50%;animation:blink 2s infinite; }
+@keyframes blink{ 0%,100%{opacity:1} 50%{opacity:.25} }
+
+.hero h1 {
+    font-size: clamp(42px, 6vw, 72px);
+    line-height: 1.1; font-weight: 800;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, #ffffff 40%, #94a3b8);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    animation: fadeInUp .7s .1s ease both;
+}
+.hero h1 span {
+    background: linear-gradient(90deg, #38bdf8, #818cf8);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.hero-sub {
+    font-size: 20px; color: #94a3b8; max-width: 620px;
+    margin: 0 auto 40px; line-height: 1.7;
+    animation: fadeInUp .7s .2s ease both;
+}
+
+.hero-cta {
+    display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;
+    animation: fadeInUp .7s .3s ease both;
+}
+
+.btn-outline {
+    display: inline-block; padding: 14px 32px;
+    background: transparent; color: #94a3b8;
+    border: 1px solid rgba(255,255,255,.15);
+    text-decoration: none; font-size: 15px; font-weight: 600;
+    border-radius: 50px; transition: all .3s ease;
+}
+.btn-outline:hover { border-color: rgba(255,255,255,.35); color: #f8fafc; transform: translateY(-2px); }
+
+.hero-stats {
+    display: flex; justify-content: center; gap: 48px; flex-wrap: wrap;
+    margin-top: 70px; padding-top: 40px;
+    border-top: 1px solid rgba(255,255,255,.06);
+    animation: fadeInUp .8s .4s ease both;
+}
+.hero-stat { text-align: center; }
+.hero-stat strong { display: block; font-size: 38px; font-weight: 800; font-family: 'Outfit', sans-serif;
+    background: linear-gradient(90deg, #38bdf8, #818cf8);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero-stat span { font-size: 13px; color: #64748b; font-weight: 500; letter-spacing: .5px; text-transform: uppercase; }
+
+@keyframes fadeInUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── SECTION COMMON ── */
+.home-section { padding: 100px 20px; position: relative; z-index: 1; }
+.section-label {
+    display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: #38bdf8; margin-bottom: 16px;
+}
+.section-title { font-size: clamp(28px, 4vw, 44px); font-weight: 700; color: #f8fafc; margin-bottom: 16px; line-height: 1.2; }
+.section-sub { font-size: 17px; color: #64748b; max-width: 560px; margin: 0 auto; line-height: 1.7; }
+
+/* ── ABOUT ── */
+.about-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+    max-width: 1100px; margin: 60px auto 0; align-items: center;
+}
+.about-text { text-align: left; }
+.about-text h3 { font-size: 32px; font-weight: 700; color: #f8fafc; margin-bottom: 18px; }
+.about-text p { color: #94a3b8; font-size: 16px; line-height: 1.8; margin-bottom: 14px; }
+.about-points { list-style: none; margin-top: 10px; display: flex; flex-direction: column; gap: 12px; }
+.about-points li {
+    display: flex; align-items: flex-start; gap: 12px;
+    font-size: 15px; color: #cbd5e1; line-height: 1.6;
+}
+.about-points li::before { content:'✦'; color:#38bdf8; flex-shrink:0; margin-top:2px; }
+.about-visual {
+    background: rgba(30,41,59,.4); border: 1px solid rgba(255,255,255,.07);
+    border-radius: 24px; padding: 36px; text-align: center;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 20px 60px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.06);
+}
+.about-visual .big-icon { font-size: 80px; margin-bottom: 20px; display: block; filter: drop-shadow(0 0 20px rgba(56,189,248,.4)); }
+.about-visual p { color: #94a3b8; font-size: 15px; line-height: 1.7; }
+
+@media(max-width:768px) { .about-grid { grid-template-columns:1fr; gap:40px; } .about-text{text-align:center;} }
+
+/* ── FEATURES GRID ── */
+.features-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px; max-width: 1100px; margin: 60px auto 0;
+}
+.feature-card {
+    background: rgba(30,41,59,.35); border: 1px solid rgba(255,255,255,.07);
+    border-radius: 20px; padding: 36px 30px;
+    transition: all .4s cubic-bezier(.175,.885,.32,1.275);
+    position: relative; overflow: hidden;
+    backdrop-filter: blur(12px);
+}
+.feature-card::before {
+    content:''; position:absolute; top:0; left:-100%; width:100%; height:3px;
+    background:linear-gradient(90deg,transparent,#38bdf8,#818cf8,transparent);
+    transition: left .5s ease;
+}
+.feature-card:hover { transform:translateY(-8px); background:rgba(30,41,59,.65); border-color:rgba(56,189,248,.25); box-shadow:0 20px 40px rgba(0,0,0,.4); }
+.feature-card:hover::before { left:100%; }
+.feature-icon { font-size: 36px; margin-bottom: 18px; display: block; }
+.feature-card h3 { font-size: 20px; color: #f8fafc; margin-bottom: 10px; font-weight: 700; }
+.feature-card p  { color: #64748b; font-size: 15px; line-height: 1.7; }
+.feature-tag {
+    display: inline-block; margin-top: 16px; font-size: 11px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    padding: 3px 12px; border-radius: 50px;
+}
+.tag-blue  { background:rgba(56,189,248,.1); color:#38bdf8; border:1px solid rgba(56,189,248,.2); }
+.tag-violet{ background:rgba(129,140,248,.1); color:#818cf8; border:1px solid rgba(129,140,248,.2); }
+.tag-green { background:rgba(16,185,129,.1);  color:#10b981; border:1px solid rgba(16,185,129,.2); }
+.tag-yellow{ background:rgba(245,158,11,.1);  color:#f59e0b; border:1px solid rgba(245,158,11,.2); }
+.tag-red   { background:rgba(239,68,68,.1);   color:#ef4444; border:1px solid rgba(239,68,68,.2); }
+
+/* ── PIPELINE ── */
+.pipeline-section { background: rgba(15,23,42,.5); border-top:1px solid rgba(255,255,255,.05); border-bottom:1px solid rgba(255,255,255,.05); }
+.pipeline-steps {
+    display: flex; align-items: stretch; justify-content: center;
+    flex-wrap: wrap; gap: 0; max-width: 1100px; margin: 60px auto 0;
+}
+.pipe-step {
+    flex: 1; min-width: 130px; max-width: 170px;
+    text-align: center; padding: 30px 16px;
+    position: relative;
+}
+.pipe-step:not(:last-child)::after {
+    content:'→'; position:absolute; right:-12px; top:50%; transform:translateY(-55%);
+    color:#334155; font-size:22px; font-weight:300;
+}
+.pipe-num {
+    width:44px;height:44px;border-radius:50%;
+    background:linear-gradient(135deg,rgba(37,99,235,.3),rgba(129,140,248,.3));
+    border:1px solid rgba(56,189,248,.3); display:flex;align-items:center;justify-content:center;
+    font-size:18px; margin:0 auto 14px; box-shadow:0 0 20px rgba(56,189,248,.15);
+}
+.pipe-step h4 { font-size:15px;font-weight:700;color:#f8fafc;margin-bottom:6px; }
+.pipe-step p  { font-size:13px;color:#64748b;line-height:1.5; }
+
+/* ── STATS COUNTER ── */
+.stats-section { background: linear-gradient(135deg, rgba(37,99,235,.08), rgba(129,140,248,.06)); }
+.stats-row {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px; max-width: 900px; margin: 60px auto 0; text-align: center;
+}
+.stat-card { padding: 30px 20px; }
+.stat-number {
+    font-size: 52px; font-weight: 800; font-family: 'Outfit',sans-serif;
+    background:linear-gradient(90deg,#38bdf8,#818cf8);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    line-height:1;
+}
+.stat-unit { font-size:22px;font-weight:700; }
+.stat-card h4 { font-size:15px;color:#94a3b8;margin-top:10px;font-weight:500; }
+.stat-card p { font-size:13px;color:#475569;margin-top:6px; }
+
+/* ── USE CASES ── */
+.usecases-grid {
+    display: grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap: 20px; max-width: 1100px; margin: 60px auto 0;
+}
+.usecase-card {
+    background:rgba(30,41,59,.3);border:1px solid rgba(255,255,255,.07);
+    border-radius:16px;padding:28px 24px;
+    display:flex;flex-direction:column;gap:12px;
+    transition:all .3s ease;
+    backdrop-filter:blur(8px);
+}
+.usecase-card:hover { transform:translateY(-4px);border-color:rgba(56,189,248,.2);background:rgba(30,41,59,.55); }
+.usecase-icon { font-size:32px; }
+.usecase-card h3 { font-size:18px;font-weight:700;color:#f8fafc; }
+.usecase-card p  { font-size:14px;color:#64748b;line-height:1.6; }
+.usecase-badge {
+    align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.8px;
+    text-transform:uppercase;padding:3px 10px;border-radius:50px;
+    background:rgba(56,189,248,.08);color:#38bdf8;border:1px solid rgba(56,189,248,.2);
+}
+
+/* ── TECH STACK ── */
+.tech-grid {
+    display: flex;flex-wrap:wrap;justify-content:center;gap:16px;
+    max-width:900px;margin:50px auto 0;
+}
+.tech-pill {
+    display:flex;align-items:center;gap:10px;
+    background:rgba(30,41,59,.5);border:1px solid rgba(255,255,255,.08);
+    border-radius:50px;padding:10px 22px;font-size:14px;color:#cbd5e1;font-weight:600;
+    transition:all .3s;backdrop-filter:blur(8px);
+}
+.tech-pill:hover { background:rgba(30,41,59,.8);border-color:rgba(56,189,248,.3);color:#f8fafc;transform:translateY(-2px); }
+.tech-pill span { font-size:20px; }
+
+/* ── CTA ── */
+.cta-section {
+    text-align:center;padding:120px 20px;position:relative;z-index:1;
+    background:radial-gradient(ellipse 80% 60% at 50% 50%, rgba(37,99,235,.08) 0%, transparent 70%);
+}
+.cta-section h2 { font-size:clamp(30px,4vw,52px);font-weight:800;color:#f8fafc;margin-bottom:20px; }
+.cta-section p  { font-size:18px;color:#64748b;max-width:520px;margin:0 auto 44px;line-height:1.7; }
+.cta-buttons { display:flex;justify-content:center;gap:16px;flex-wrap:wrap; }
+
+/* ── FOOTER ── */
+.home-footer {
+    border-top:1px solid rgba(255,255,255,.05);
+    padding:48px 40px 32px; position:relative;z-index:1;
+}
+.footer-grid {
+    display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;
+    max-width:1100px;margin:0 auto 40px;
+}
+.footer-brand h3 {
+    font-size:22px;font-weight:700;
+    background:linear-gradient(90deg,#38bdf8,#818cf8);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    margin-bottom:12px;
+}
+.footer-brand p { font-size:14px;color:#475569;line-height:1.7;max-width:260px; }
+.footer-col h4 { font-size:13px;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;font-weight:700;margin-bottom:16px; }
+.footer-col a  { display:block;font-size:14px;color:#475569;text-decoration:none;margin-bottom:10px;transition:color .3s; }
+.footer-col a:hover { color:#38bdf8; }
+.footer-bottom {
+    max-width:1100px;margin:0 auto;
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+    border-top:1px solid rgba(255,255,255,.05);padding-top:24px;
+    font-size:13px;color:#334155;
+}
+.footer-bottom a { color:#475569;text-decoration:none;transition:color .3s; }
+.footer-bottom a:hover { color:#38bdf8; }
+
+/* ── BUSINESS MODEL / PRICING ── */
+.pricing-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px; max-width: 1000px; margin: 60px auto 0;
+}
+.pricing-card {
+    background: rgba(30,41,59,.35); border: 1px solid rgba(255,255,255,.07);
+    border-radius: 24px; padding: 40px 30px; text-align: left;
+    transition: all .4s cubic-bezier(.175,.885,.32,1.275);
+    backdrop-filter: blur(12px); position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+}
+.pricing-card:hover {
+    transform: translateY(-8px); background: rgba(30,41,59,.65);
+    border-color: rgba(56,189,248,.25); box-shadow: 0 20px 40px rgba(0,0,0,.4);
+}
+.pricing-card.popular {
+    border-color: rgba(129,140,248,.3); background: rgba(15,23,42,.6);
+}
+.pricing-card.popular::after {
+    content:'Most Popular'; position:absolute; top:12px; right:-30px;
+    background:linear-gradient(90deg,#38bdf8,#818cf8); color:#fff;
+    font-size:11px; font-weight:700; padding:4px 30px; transform:rotate(45deg);
+    text-transform:uppercase; letter-spacing:1px; box-shadow:0 0 10px rgba(0,0,0,.3);
+}
+.pricing-tier { font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#38bdf8; margin-bottom:12px; display:block; }
+.pricing-card.popular .pricing-tier { color:#818cf8; }
+.pricing-price { font-size:42px; font-weight:800; color:#f8fafc; font-family:'Outfit',sans-serif; margin-bottom:20px; display:flex; align-items:baseline; gap:6px; }
+.pricing-price span { font-size:16px; color:#64748b; font-weight:500; }
+.pricing-desc { color:#94a3b8; font-size:14px; line-height:1.6; margin-bottom:24px; padding-bottom:24px; border-bottom:1px solid rgba(255,255,255,.06); flex-grow: 1; }
+.pricing-features { list-style:none; margin:0 0 30px 0; padding:0; display:flex; flex-direction:column; gap:12px; }
+.pricing-features li { display:flex; align-items:flex-start; gap:10px; font-size:14px; color:#cbd5e1; line-height:1.5; }
+.pricing-features li::before { content:'✓'; color:#10b981; font-weight:800; font-size:15px; }
+.pricing-card.popular .btn-outline { background:linear-gradient(90deg,#38bdf8,#818cf8); color:#fff; border:none; width:100%; text-align:center; box-shadow: 0 10px 20px rgba(129,140,248,.2); }
+.pricing-card.popular .btn-outline:hover { transform: translateY(-2px); box-shadow: 0 15px 25px rgba(129,140,248,.3); }
+.pricing-card .btn-outline { width:100%; text-align:center; padding-left:0; padding-right:0; margin-top:auto; }
+
+@media(max-width:768px){
+    .footer-grid{grid-template-columns:1fr 1fr;}
+    .footer-brand{grid-column:1/-1;}
+    .pipe-step:not(:last-child)::after{display:none;}
+    .hero-stats{gap:28px;}
+    .pricing-grid{padding:0 10px;}
+}
+@media(max-width:480px){
+    .footer-grid{grid-template-columns:1fr;}
+    .hero h1{font-size:36px;}
+}
+</style>
+  <link rel="stylesheet" crossorigin href="/assets/index-BQnBnyu5.css">
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- ═══════════ NAVBAR ═══════════ -->
+<nav>
+    <div style="display:flex;align-items:center;">
+        <h1><a href="index.html" style="color:inherit;text-decoration:none;">🚨 Orvex AI</a></h1>
+        <span class="beta-badge">BETA</span>
+    </div>
+    <div>
+        <a href="index.html" class="active">Home</a>
+        <a href="features.html">Features</a>
+        <a href="system.html">System</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="#business-model">Pricing</a>
+        <a href="login.html" class="btn" style="padding:8px 22px;font-size:14px;border-radius:50px;">Login</a>
+    </div>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero" style="text-align:center;">
+    <div class="hero-badge">🟢 Public Beta Version — Real-Time Intelligence Active</div>
+    <h1>Real-Time Intelligent<br><span>Surveillance Platform</span></h1>
+    <p class="hero-sub">
+        Detect human behavior, calculate dynamic risk scores, and trigger instant alerts —
+        all without facial recognition. Privacy-first. Performance-first.
+    </p>
+    <div class="hero-cta">
+        <a href="dashboard.html" class="btn">▶ View Live Dashboard</a>
+        <a href="#about" class="btn-outline">Learn More ↓</a>
+        <a href="login.html" class="btn-outline">Login to System →</a>
+    </div>
+
+    <!-- Key numbers -->
+    <div class="hero-stats">
+        <div class="hero-stat">
+            <strong>&lt;50ms</strong>
+            <span>Detection Latency</span>
+        </div>
+        <div class="hero-stat">
+            <strong>6</strong>
+            <span>Risk Behaviors Tracked</span>
+        </div>
+        <div class="hero-stat">
+            <strong>0–100</strong>
+            <span>Dynamic Risk Score</span>
+        </div>
+        <div class="hero-stat">
+            <strong>24/7</strong>
+            <span>Continuous Monitoring</span>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ ABOUT ═══════════ -->
+<section class="home-section" id="about" style="text-align:center;">
+    <span class="section-label">About Orvex AI</span>
+    <h2 class="section-title">What is Orvex AI?</h2>
+    <p class="section-sub">A next-generation behavioral risk intelligence engine built for real-world security environments.</p>
+
+    <div class="about-grid">
+        <div class="about-visual">
+            <span class="big-icon">🛡️</span>
+            <p>
+                Orvex AI processes live video streams, identifies individuals as tracked objects, and
+                continuously scores each person's behavior based on <strong style="color:#38bdf8">loitering, pacing,
+                zone violations, erratic movement, crowd clustering,</strong> and more — all in real time.
+            </p>
+        </div>
+        <div class="about-text">
+            <h3>Intelligent. Private. Actionable.</h3>
+            <p>
+                Unlike traditional CCTV systems, Orvex AI doesn't store faces or personal data.
+                Instead, it uses COCO-SSD object detection to track <em>movement patterns</em> and
+                derives behavioral signals that matter for security teams.
+            </p>
+            <ul class="about-points">
+                <li>No facial recognition — fully GDPR-friendly surveillance</li>
+                <li>Works on any standard webcam or IP camera feed</li>
+                <li>Runs entirely in-browser using TensorFlow.js — no heavy server needed</li>
+                <li>Assigns unique Track IDs to each detected person across frames</li>
+                <li>Automated alert logging with timestamped event history</li>
+                <li>Zone-aware risk assessment with configurable thresholds</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ FEATURES ═══════════ -->
+<section class="home-section" id="features" style="text-align:center;background:rgba(15,23,42,.4);border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05);">
+    <span class="section-label">Core Features</span>
+    <h2 class="section-title">Everything You Need for Smart Security</h2>
+    <p class="section-sub">Six powerful detection capabilities working in unison to keep your environment safe.</p>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <span class="feature-icon">🎯</span>
+            <h3>COCO-SSD Object Detection</h3>
+            <p>Leverages the COCO-SSD pre-trained model to detect and classify 80+ object types in real-time, with bounding boxes and confidence scores rendered directly on the video feed.</p>
+            <span class="feature-tag tag-blue">TensorFlow.js</span>
+        </div>
+        <div class="feature-card">
+            <span class="feature-icon">🔗</span>
+            <h3>Multi-Frame Object Tracking</h3>
+            <p>Each detected person receives a persistent Track ID across video frames using centroid matching, enabling continuous behavioral analysis even as subjects move through the scene.</p>
+            <span class="feature-tag tag-violet">Track IDs</span>
+        </div>
+        <div class="feature-card">
+            <span class="feature-icon">🚨</span>
+            <h3>Behavioral Risk Scoring</h3>
+            <p>A dynamic 0–100 risk score is calculated per tracked individual using weighted behavior signals: loitering, pacing, zone violations, erratic movement, and crowd clustering.</p>
+            <span class="feature-tag tag-red">Real-Time</span>
+        </div>
+        <div class="feature-card">
+            <span class="feature-icon">🗺️</span>
+            <h3>Zone-Aware Monitoring</h3>
+            <p>Define restricted or high-security zones within the camera feed. Orvex AI automatically flags any tracked entity entering prohibited areas and escalates the risk score accordingly.</p>
+            <span class="feature-tag tag-yellow">Configurable</span>
+        </div>
+        <div class="feature-card">
+            <span class="feature-icon">📊</span>
+            <h3>Live Alert Dashboard</h3>
+            <p>A real-time stats panel displays system status, current behavior classification, risk level, zone, Track ID, and a timestamped alert log for full situational awareness at a glance.</p>
+            <span class="feature-tag tag-green">Live Feed</span>
+        </div>
+        <div class="feature-card">
+            <span class="feature-icon">🔒</span>
+            <h3>Privacy-First Architecture</h3>
+            <p>No face data, no biometrics, no cloud uploads. All processing happens locally in the browser. Works with any camera — no special hardware or proprietary infrastructure required.</p>
+            <span class="feature-tag tag-green">Privacy Safe</span>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ SYSTEM PIPELINE ═══════════ -->
+<section class="home-section pipeline-section" id="system" style="text-align:center;">
+    <span class="section-label">How It Works</span>
+    <h2 class="section-title">The Orvex AI Pipeline</h2>
+    <p class="section-sub">Six sequential stages transform raw video into actionable security intelligence in under 50 milliseconds.</p>
+
+    <div class="pipeline-steps">
+        <div class="pipe-step">
+            <div class="pipe-num">📹</div>
+            <h4>Video Input</h4>
+            <p>Webcam or IP camera stream ingested live</p>
+        </div>
+        <div class="pipe-step">
+            <div class="pipe-num">🎯</div>
+            <h4>Object Detection</h4>
+            <p>COCO-SSD identifies and bounds each person</p>
+        </div>
+        <div class="pipe-step">
+            <div class="pipe-num">🔗</div>
+            <h4>Tracking</h4>
+            <p>Centroid matching assigns persistent Track IDs</p>
+        </div>
+        <div class="pipe-step">
+            <div class="pipe-num">🧠</div>
+            <h4>Behavior Analysis</h4>
+            <p>6 behavioral patterns detected per frame</p>
+        </div>
+        <div class="pipe-step">
+            <div class="pipe-num">📈</div>
+            <h4>Risk Scoring</h4>
+            <p>Dynamic 0–100 score computed per tracked object</p>
+        </div>
+        <div class="pipe-step">
+            <div class="pipe-num">🚨</div>
+            <h4>Alert Triggered</h4>
+            <p>Threshold crossed → instant timestamped log entry</p>
+        </div>
+    </div>
+
+    <!-- Behavior types -->
+    <div style="max-width:900px;margin:50px auto 0;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;">
+        <span style="padding:8px 20px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:50px;font-size:13px;color:#fca5a5;font-weight:600;">🔴 Loitering</span>
+        <span style="padding:8px 20px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:50px;font-size:13px;color:#fcd34d;font-weight:600;">🟡 Pacing</span>
+        <span style="padding:8px 20px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:50px;font-size:13px;color:#fca5a5;font-weight:600;">🔴 Zone Violation</span>
+        <span style="padding:8px 20px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:50px;font-size:13px;color:#fcd34d;font-weight:600;">🟡 Erratic Movement</span>
+        <span style="padding:8px 20px;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.25);border-radius:50px;font-size:13px;color:#7dd3fc;font-weight:600;">🔵 Crowd Clustering</span>
+        <span style="padding:8px 20px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);border-radius:50px;font-size:13px;color:#6ee7b7;font-weight:600;">🟢 Normal Movement</span>
+    </div>
+</section>
+
+<!-- ═══════════ PERFORMANCE STATS ═══════════ -->
+<section class="home-section stats-section" style="text-align:center;">
+    <span class="section-label">Performance</span>
+    <h2 class="section-title">Built for Real-World Environments</h2>
+    <p class="section-sub">Numbers that matter for mission-critical security deployments.</p>
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-number">&lt;<span class="stat-unit">50</span>ms</div>
+            <h4>Processing Latency</h4>
+            <p>Per-frame detection & scoring</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">80<span class="stat-unit">+</span></div>
+            <h4>Object Classes</h4>
+            <p>Detected by COCO-SSD model</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">6</div>
+            <h4>Behavior Signals</h4>
+            <p>Tracked simultaneously per person</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">0</div>
+            <h4>Faces Stored</h4>
+            <p>Zero biometric data collected</p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ USE CASES ═══════════ -->
+<section class="home-section" id="usecases" style="text-align:center;background:rgba(15,23,42,.4);border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05);">
+    <span class="section-label">Use Cases</span>
+    <h2 class="section-title">Where Orvex AI Deploys</h2>
+    <p class="section-sub">Adaptable to any physical security environment that needs proactive intelligence.</p>
+
+    <div class="usecases-grid">
+        <div class="usecase-card">
+            <div class="usecase-icon">🏦</div>
+            <h3>Banks & Financial Institutions</h3>
+            <p>Detect loitering near ATMs, flag unauthorized zone entries near vaults, and monitor for unusual crowd clustering at teller windows.</p>
+            <span class="usecase-badge">High Security</span>
+        </div>
+        <div class="usecase-card">
+            <div class="usecase-icon">🏫</div>
+            <h3>Schools & Universities</h3>
+            <p>Monitor campus perimeters, restricted staff areas, and alert security when individuals linger in isolated corridors for extended periods.</p>
+            <span class="usecase-badge">Campus Safety</span>
+        </div>
+        <div class="usecase-card">
+            <div class="usecase-icon">🏪</div>
+            <h3>Retail & Warehouses</h3>
+            <p>Spot coordinated shoplifting patterns, detect pacing behavior near high-value merchandise, and monitor restricted storage areas 24/7.</p>
+            <span class="usecase-badge">Loss Prevention</span>
+        </div>
+        <div class="usecase-card">
+            <div class="usecase-icon">🚉</div>
+            <h3>Public Transport Hubs</h3>
+            <p>Track unattended luggage scenarios, monitor crowd clustering on platforms, and trigger alerts for suspicious loitering near entry gates.</p>
+            <span class="usecase-badge">Public Safety</span>
+        </div>
+        <div class="usecase-card">
+            <div class="usecase-icon">🏭</div>
+            <h3>Industrial Facilities</h3>
+            <p>Enforce no-entry zones around hazardous machinery, detect unauthorized personnel in restricted production floors, and log every incident.</p>
+            <span class="usecase-badge">Workplace Safety</span>
+        </div>
+        <div class="usecase-card">
+            <div class="usecase-icon">🏙️</div>
+            <h3>Smart City Surveillance</h3>
+            <p>Scale across multiple camera nodes to maintain city-wide situational awareness, feeding risk data into unified operations centers.</p>
+            <span class="usecase-badge">City Scale</span>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ TECH STACK ═══════════ -->
+<section class="home-section" id="tech" style="text-align:center;">
+    <span class="section-label">Technology</span>
+    <h2 class="section-title">Powered By Modern AI & Web Tech</h2>
+    <p class="section-sub">No proprietary black boxes. Open, transparent technology stack you can trust.</p>
+
+    <div class="tech-grid">
+        <div class="tech-pill"><span>🧠</span> TensorFlow.js</div>
+        <div class="tech-pill"><span>🎯</span> COCO-SSD Object Detection</div>
+        <div class="tech-pill"><span>📹</span> MediaDevices API (Webcam)</div>
+        <div class="tech-pill"><span>🎨</span> HTML5 Canvas Overlay</div>
+        <div class="tech-pill"><span>⚡</span> Vanilla JavaScript</div>
+        <div class="tech-pill"><span>🌐</span> Flask REST API (Backend)</div>
+        <div class="tech-pill"><span>🐍</span> Python</div>
+        <div class="tech-pill"><span>📊</span> Real-Time JSON Data Feed</div>
+        <div class="tech-pill"><span>🔒</span> Client-Side Processing</div>
+        <div class="tech-pill"><span>🎨</span> Glassmorphism UI</div>
+    </div>
+</section>
+
+<!-- ═══════════ BUSINESS MODEL ═══════════ -->
+<section class="home-section" id="business-model" style="text-align:center;background:rgba(15,23,42,.4);border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05);">
+    <span class="section-label">Business Model</span>
+    <h2 class="section-title">Scalable SaaS Pricing</h2>
+    <p class="section-sub">Choose a deployment plan that fits your security needs. From single locations to massive city-scale grids.</p>
+
+    <div class="pricing-grid">
+        <!-- Tier 1 -->
+        <div class="pricing-card">
+            <span class="pricing-tier">Standard Site</span>
+            <div class="pricing-price">$199<span>/mo</span></div>
+            <p class="pricing-desc">Perfect for small retail shops, offices, and localized security setups looking for real-time alerts.</p>
+            <ul class="pricing-features">
+                <li>Up to 5 Camera Feeds</li>
+                <li>Standard 6-Behavior Analysis</li>
+                <li>48-Hour Alert History Logging</li>
+                <li>Email & SMS Notifications</li>
+                <li>Basic Zone Configuration</li>
+            </ul>
+            <a href="login.html" class="btn-outline">Start Free Trial</a>
+        </div>
+        
+        <!-- Tier 2 -->
+        <div class="pricing-card popular">
+            <span class="pricing-tier">Enterprise Campus</span>
+            <div class="pricing-price">$699<span>/mo</span></div>
+            <p class="pricing-desc">Advanced surveillance for schools, corporate campuses, logistics hubs, and large retail chains.</p>
+            <ul class="pricing-features">
+                <li>Up to 25 Camera Feeds</li>
+                <li>Custom Risk Thresholds</li>
+                <li>30-Day Alert Analytics History</li>
+                <li>API Access & Webhooks</li>
+                <li>Advanced Polygon Zoning</li>
+                <li>Priority 24/7 Support</li>
+            </ul>
+            <a href="login.html" class="btn-outline">Deploy Enterprise</a>
+        </div>
+        
+        <!-- Tier 3 -->
+        <div class="pricing-card">
+            <span class="pricing-tier">City Scale & Custom</span>
+            <div class="pricing-price">Custom</div>
+            <p class="pricing-desc">Air-gapped on-prem deployments, unified operations centers, and unlimited scalable processing.</p>
+            <ul class="pricing-features">
+                <li>Unlimited Camera Feeds</li>
+                <li>On-Premise Deployment Option</li>
+                <li>Custom Behavioral Models</li>
+                <li>1-Year Compliance Logging</li>
+                <li>Federated Multi-Site Connect</li>
+                <li>Dedicated Solutions Architect</li>
+            </ul>
+            <a href="mailto:sales@orvex.ai" class="btn-outline">Contact Sales</a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ CTA BANNER ═══════════ -->
+<section class="cta-section">
+    <span class="section-label">Get Started</span>
+    <h2>Ready to Secure Your Environment?</h2>
+    <p>Access the live dashboard now, or log in to your account to configure zones, thresholds, and alert policies.</p>
+    <div class="cta-buttons">
+        <a href="dashboard.html" class="btn">▶ Open Live Dashboard</a>
+        <a href="login.html" class="btn-outline">Login to Your Account →</a>
+    </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="home-footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <h3>🚨 Orvex AI</h3>
+            <p>Real-time behavioral risk intelligence. Privacy-first surveillance for the modern security environment.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Platform</h4>
+            <a href="index.html">Home</a>
+            <a href="features.html">Features</a>
+            <a href="system.html">System Flow</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="#business-model">Business Model</a>
+        </div>
+        <div class="footer-col">
+            <h4>Security</h4>
+            <a href="login.html">Login</a>
+            <a href="login.html">Request Access</a>
+            <a href="#">Alert Policies</a>
+            <a href="#">Zone Config</a>
+        </div>
+        <div class="footer-col">
+            <h4>Resources</h4>
+            <a href="#">Documentation</a>
+            <a href="#">API Reference</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Use</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <span>© 2026 Orvex AI — Intelligent Surveillance System (Beta Version)</span>
+        <span style="display:flex;align-items:center;gap:8px;">
+            <span style="width:7px;height:7px;background:#10b981;border-radius:50%;animation:blink 2s infinite;display:inline-block;"></span>
+            All systems operational
+        </span>
+    </div>
+</footer>
+
+<script>
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', e => {
+            const target = document.querySelector(a.getAttribute('href'));
+            if(target){ e.preventDefault(); target.scrollIntoView({ behavior:'smooth', block:'start' }); }
+        });
+    });
+
+    // Animate stats counter on scroll
+    const counters = document.querySelectorAll('.stat-number');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting){ entry.target.classList.add('counted'); }
+        });
+    }, { threshold: 0.4 });
+    counters.forEach(c => observer.observe(c));
+
+    // Fade-in on scroll for cards
+    const revealEls = document.querySelectorAll('.feature-card, .usecase-card, .pipe-step, .stat-card');
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+            if(entry.isIntersecting){
+                entry.target.style.transitionDelay = (i % 6) * 60 + 'ms';
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    revealEls.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity .6s ease, transform .6s ease';
+        revealObserver.observe(el);
+    });
+</script>
+
+</body>
+</html>
