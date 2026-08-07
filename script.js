@@ -4,7 +4,7 @@
 // ============================================================
 
 const API = "http://127.0.0.1:5000";
-fetch('http://127.0.0.1:5000/api/scan')
+fetch(`${API}/api/scan`)
   .then(res => res.json())
   .then(data => console.log(data));
 
